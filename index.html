@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="graphite" data-mode="light" data-text="default" data-motion="full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f4f2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#16181b" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Still Sudoku: a calm, ad-free Sudoku with teaching hints, notes, daily puzzles and offline play.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Sudoku">
+  <title>Still Sudoku</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./styles/themes.css">
+  <link rel="stylesheet" href="./styles/menu.css">
+  <script>
+    // Apply the saved theme before first paint (no flash). main.js owns this afterwards.
+    (function () {
+      try {
+        var s = JSON.parse(localStorage.getItem("sudoku:v2:settings") || "{}") || {};
+        var d = document.documentElement;
+        if (s.theme) d.dataset.theme = s.theme;
+        var dark = s.colorMode === "dark" || (s.colorMode !== "light" && window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches);
+        d.dataset.mode = dark ? "dark" : "light";
+        if (s.textSize) d.dataset.text = s.textSize;
+      } catch (e) { /* defaults */ }
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#board">Skip to puzzle</a>
+
+  <div class="app" id="app" data-ready="false">
+    <main class="game" id="game" aria-label="Sudoku">
+      <section class="board-area" aria-label="Puzzle">
+        <div class="stack">
+          <div class="status" id="status" role="group" aria-label="Game status"></div>
+          <div class="board-frame">
+            <div class="board" id="board" data-testid="board" role="grid" aria-label="Sudoku puzzle, 9 by 9" aria-describedby="board-help"></div>
+            <p class="sr-only" id="board-help">Use arrow keys to move, 1 to 9 to enter a digit, N for notes, Backspace to erase.</p>
+            <div class="toast" id="toast" role="status" hidden></div>
+          </div>
+          <div class="progress" id="progress" data-testid="status-progress"></div>
+        </div>
+      </section>
+
+      <section class="controls" aria-label="Controls">
+        <div class="tools" id="tools" role="toolbar" aria-label="Tools"></div>
+        <div class="numpad" id="numpad" role="group" aria-label="Numbers"></div>
+        <div class="hint-panel" id="hint-panel" data-testid="hint-panel" hidden></div>
+      </section>
+    </main>
+
+    <div class="loading" id="loading" data-testid="loading" role="status" aria-live="polite" hidden>
+      <div class="loading-card">
+        <span class="spinner" aria-hidden="true"></span>
+        <p id="loading-text">Creating a puzzle…</p>
+      </div>
+    </div>
+
+    <div id="menu-root"></div>
+    <div id="win-root"></div>
+    <div id="onboarding-root"></div>
+    <p class="sr-only" id="sr-status" role="status" aria-live="polite" aria-atomic="true"></p>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
